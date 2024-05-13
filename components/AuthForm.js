@@ -3,21 +3,28 @@ import React, { useState } from "react";
 import Input from "./Input";
 import Button from "./Button";
 
-export default function AuthForm({ isLogin ,onsubmit}) {
+export default function AuthForm({ isLogin, onsubmit, credentialsInvalid }) {
   const [enteredEmail, setEnteredEmail] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
   const [enteredConfirmEmail, setEnteredConfirmEmail] = useState("");
   const [enteredConfirmPassword, setEnteredConfirmPassword] = useState("");
 
-  function submitHandler(){
+  const {
+    email: emailIsInvaid,
+    confirmEmail: emailsDontMatch,
+    password: passwordIsInvalid,
+    confirmPassword: passwwordDontMatch,
+  } = credentialsInvalid;
+  
+
+
+  function submitHandler() {
     onsubmit({
-      email:enteredEmail,
-      confirmEmail:enteredConfirmEmail,
-      password:enteredPassword,
-      confirmPassword:enteredConfirmPassword
-
-    })
-
+      email: enteredEmail,
+      confirmEmail: enteredConfirmEmail,
+      password: enteredPassword,
+      confirmPassword: enteredConfirmPassword,
+    });
   }
   function updateInput(inputType, enteredValue) {
     switch (inputType) {
@@ -42,6 +49,7 @@ export default function AuthForm({ isLogin ,onsubmit}) {
         keyboardType="email-address"
         onUpdateValue={updateInput.bind(this, "email")}
         value={enteredEmail}
+        isInvalid={emailIsInvaid}
       />
       {!isLogin && (
         <Input
@@ -49,6 +57,7 @@ export default function AuthForm({ isLogin ,onsubmit}) {
           keyboardType="email-address"
           onUpdateValue={updateInput.bind(this, "confirmEmail")}
           value={enteredConfirmEmail}
+          isInvalid={emailsDontMatch}
         />
       )}
       <Input
@@ -56,6 +65,7 @@ export default function AuthForm({ isLogin ,onsubmit}) {
         secure
         onUpdateValue={updateInput.bind(this, "password")}
         value={enteredPassword}
+        isInvalid={passwordIsInvalid}
       />
       {!isLogin && (
         <Input
@@ -63,6 +73,7 @@ export default function AuthForm({ isLogin ,onsubmit}) {
           secure
           onUpdateValue={updateInput.bind(this, "confirmPassword")}
           value={enteredConfirmPassword}
+          isInvalid={passwwordDontMatch}
         />
       )}
       <View style={styles.buttons}>

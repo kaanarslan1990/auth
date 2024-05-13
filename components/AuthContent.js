@@ -1,11 +1,17 @@
 import { Alert, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import AuthForm from "./AuthForm";
 import ButtonWhite from "./ButtonWhite";
 import { useNavigation } from "@react-navigation/native";
 
-export default function AuthContent({ isLogin }) {
+export default function AuthContent({ isLogin,onAuthenticate }) {
   const navigation = useNavigation();
+  const [credentialsInvalid, setCredentialsInvalid] = useState({
+    email: false,
+    password: false,
+    confirmEmail: false,
+    confirmPassword: false,
+  });
 
   function submitHandler(credentials) {
     let { confirmEmail, confirmPassword, email, password } = credentials;
@@ -24,8 +30,16 @@ export default function AuthContent({ isLogin }) {
       (!isLogin && (!emailsAreEqual || !passwordsAreEqual))
     ) {
       Alert.alert("Hops!", "Check your register data!");
+      setCredentialsInvalid({
+        email: !emailIsValid,
+        confirmEmail: !emailIsValid || !emailsAreEqual,
+        password: !passwordIsValid,
+        confirmPassword:!passwordIsValid || !passwordsAreEqual
+      });
       return;
     }
+
+    onAuthenticate({email,password})
   }
 
   function switchScreen() {
@@ -37,7 +51,7 @@ export default function AuthContent({ isLogin }) {
   }
   return (
     <View style={styles.container}>
-      <AuthForm isLogin={isLogin} onsubmit={submitHandler} />
+      <AuthForm credentialsInvalid={credentialsInvalid} isLogin={isLogin} onsubmit={submitHandler} />
       <View>
         <ButtonWhite onPress={switchScreen}>
           {isLogin ? "Create new user" : "Login"}
